@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, merge, interval, BehaviorSubject, of, Observable } from 'rxjs';
-import { withLatestFrom, tap, startWith, map, switchMap, scan, mergeMap } from 'rxjs/operators';
+import { withLatestFrom, tap, startWith, map, switchMap, scan, mergeMap, shareReplay } from 'rxjs/operators';
+import { SynthesisService } from './synthesis.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class ClockService {
     isRunning: false,
     time: 120,
     min: 13,
-    max: 18
+    max: 18,
+    drill: {}
   }
 
   startEvent = new Subject();
@@ -25,11 +27,11 @@ export class ClockService {
   clockChangeEvent = new BehaviorSubject(this.intialClockState);
   clockChangeEvent$: Observable<any> = this.clockChangeEvent.asObservable();
 
-  state$ = merge(this.startEvent, this.resumeEvent, this.pauseEvent, this.stopEvent, this.clockChangeEvent$).pipe(
+  state$ = merge(this.startEvent, this.resumeEvent, this.pauseEvent, this.stopEvent$, this.clockChangeEvent$).pipe(
     switchMap(event => {
-      if (event === 'start' || event === 'resume') return interval(1000).pipe(map(v => v+1));
+      if (event === 'start' || event === 'resume') return interval(1000).pipe(map(v => v + 1));
       if (event === 'pause') return of();
-      else return of({...event}); // ClockState
+      else return of({ ...event }); // ClockState
     }),
     scan((complete, partial) => {
       if (partial.time) {
@@ -45,34 +47,43 @@ export class ClockService {
         --complete.time;
       }
 
+      console.log(complete);
       return complete;
-    })
+    }),
+    shareReplay(1)
   )
 
-  
+
   utterance$ = this.state$.pipe(
-    scan((x,i) => {
-      
+    scan((x, i: any) => {
+      // console.log(i);
+
       if (x.index === 0) {
         x.magicNumber = this.randomIntFromInterval(i.min, i.max);
       }
 
       if (x.index === x.magicNumber) {
-        console.log('hey!! magic number was: ', x.magicNumber);
-        return {index: 0, magicNumber: 0}
+        const arrayLength = i.drill.techniques.length;
+        const randValue = Math.floor((Math.random() * arrayLength))
+        const message = i.drill.techniques[randValue];
+        this.s.updateMessage(message);
+        this.s.speak();
+
+
+        return { index: 0, magicNumber: 0 }
       }
 
-      if (i.isRunning)  { 
+      if (i.isRunning) {
         ++x.index;
         return x;
-      } else { 
-        return {index: 0, magicNumber: 0};
+      } else {
+        return { index: 0, magicNumber: 0 };
       }
 
-    }, {index: 0, magicNumber: 0})
-  ).subscribe(); // TODO: Fix
+    }, { index: 0, magicNumber: 0 })
+  )
 
-  constructor() { }
+  constructor(private s: SynthesisService) { }
 
   randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);

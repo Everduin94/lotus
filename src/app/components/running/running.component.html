@@ -1,7 +1,9 @@
 <div class="clock">
   <div class="clock__time">
     <ng-container *ngIf="this.cs.state$ | async as state">
+      <ng-container *ngIf="this.cs.utterance$ | async">
         {{state.time | timeFormat}}
+      </ng-container>
     </ng-container>
   </div>
 </div>

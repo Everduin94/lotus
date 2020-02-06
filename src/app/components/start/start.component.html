@@ -15,9 +15,15 @@
         <option *ngFor="let drill of drills" [value]="drill">{{drill}}</option>
     </select>
   </div>
+
+  <div>
+    <ng-container *ngIf="selectedDrill$ | async as selectedDrill">
+      {{selectedDrill.description}}
+    </ng-container>
+  </div>
   
   <div>
-    <button #start (click)="onSubmit()">Start</button>
+    <button #start>Start</button>
   </div>
 </form>
 

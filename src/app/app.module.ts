@@ -9,6 +9,7 @@ import { TimeFormatPipe } from './pipes/time-format.pipe';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { StartComponent } from './components/start/start.component';
 import { RunningComponent } from './components/running/running.component';
+import { StartRunningConnectorDirective } from './directives/start-running-connector.directive';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { RunningComponent } from './components/running/running.component';
     InputToCountdownDirective,
     TimeFormatPipe,
     StartComponent,
-    RunningComponent
+    RunningComponent,
+    StartRunningConnectorDirective
   ],
   imports: [
     BrowserModule,
