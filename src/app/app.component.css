@@ -6,9 +6,13 @@
     align-items: center;
     padding: 0;
     margin: 0;
-    background-image: url(../assets/half-bg.png); 
+    background-image: url(../assets/bg-white.png); 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+}
+
+body, html {
+    background: black;
 }

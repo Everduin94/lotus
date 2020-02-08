@@ -40,6 +40,8 @@ export class ClockService {
       }
 
       if (complete.time === 0) {
+        this.s.updateMessage('Complete!');
+        this.s.speak();
         complete.isRunning = false;
         this.pauseEvent.next('pause');
       } else {
