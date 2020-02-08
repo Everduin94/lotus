@@ -1,0 +1,42 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div>
+    <fieldset>
+      <legend>Minutes</legend>
+      <input #minutes formControlName="minutes">
+    </fieldset>
+    <fieldset>
+      <legend>Seconds</legend>
+      <input #seconds formControlName="seconds">
+    </fieldset>
+  </div>
+
+  <div>
+    <fieldset>
+      <legend>Minimum Interval</legend>
+      <input #minInterval formControlName="minInterval">
+    </fieldset>
+    <fieldset>
+      <legend>Maximum Interval</legend>
+      <input #maxInterval formControlName="maxInterval">
+    </fieldset>
+  </div>
+
+  <div *ngIf="drills$ | async as drills">
+    <fieldset>
+      <legend>Select a Drill</legend>
+      <select #drillSelect id="drill-select" formControlName="drill">
+        <option *ngFor="let drill of drills" [value]="drill">{{drill}}</option>
+      </select>
+    </fieldset>
+  </div>
+
+  <div class="description">
+    <ng-container *ngIf="selectedDrill$ | async as selectedDrill">
+      {{selectedDrill.description}}
+    </ng-container>
+  </div>
+
+  <div>
+    <button #start class="start-button">Start</button>
+  </div>
+</form>

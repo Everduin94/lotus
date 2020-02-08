@@ -1,6 +1,9 @@
-<div class="background">
-  <div class="center" appInputToCountdown>
-    <app-countdown ></app-countdown>
-    <app-time-input></app-time-input>
-  </div>
-</div>
+
+<ng-container *ngIf="!connector.isRunning">
+  <app-start></app-start>
+</ng-container>
+  
+<ng-container *ngIf="connector.isRunning">
+  <app-running></app-running>
+</ng-container>
+  
